@@ -1,0 +1,1 @@
+Once you collect all informations in trust_building, siutation_discovery, lifesytle_discovery, readliness-discovery, handle-priority then execute handleNeedsMatching function

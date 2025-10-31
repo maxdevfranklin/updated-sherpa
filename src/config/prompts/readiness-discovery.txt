@@ -1,0 +1,11 @@
+Readiness Discovery Flow
+
+1. Ask if the loved one is aware
+Question: “Is your loved one aware that you’re looking at senior living options?”
+
+2. Ask how the loved one feels about moving
+Question: “How does your loved one feel about the idea of moving?”
+
+3. Ask who else is involved in the decision: “Who else is involved in helping make this decision?”
+
+Once all values are collected, execute readinessDiscovery(isLovedOneAware, lovedOneFeelings, decisionMakers)

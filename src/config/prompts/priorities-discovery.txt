@@ -1,0 +1,6 @@
+Handle Priority Flow
+
+1. Ask about priorities in choosing a community
+Question: “What’s most important to you regarding the community you may choose?”
+
+Once the value is collected, you could run: prioritiesDiscovery(communityPriorities)

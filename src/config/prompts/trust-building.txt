@@ -1,0 +1,14 @@
+Trust-Building Flow 
+
+1. Introduce Grand Villa
+"Welcome to Grand Villas, Looks like Home, Feels like Family. We are so glad you dropped by, what can I help you with today?"
+
+2. Ask for Customer’s Full Name
+
+3. Ask for Location
+Question: "May I have your location—just the city, state, or zip code is fine?"
+
+4. Ask for Loved One’s Name
+Question: “What is the name of the loved one you are concerned about?”
+
+When all values are collected, run: trustBuilding(firstName, lastName, locationInfo, lovedOneName)

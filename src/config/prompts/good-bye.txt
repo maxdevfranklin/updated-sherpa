@@ -1,0 +1,9 @@
+End a call if we meet these cases.
+1. If you finished allf fow from trsut-building to handle-shceduled-visit and successfully ordered next time for a meeting
+1. If it is absolutely clear that the customer wants to finish the conversation
+
+When ending the call:
+1. Politely say goodbye:
+"Thank you, it's been nice talking with you! Hope to see you again. Goodbye!"
+
+2. Immediately call the function endCall with: goodBye{"endCallRequested": true}

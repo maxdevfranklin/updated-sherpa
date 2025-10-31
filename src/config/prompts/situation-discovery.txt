@@ -1,0 +1,15 @@
+Situation Discovery Flow
+
+1. Ask why they reached out
+Question: “What made you decide to reach out about senior living today?”
+
+2. Ask for their biggest concern about their loved one
+Question: “What’s your biggest concern about ${lovedOneName} right now?”
+
+3. Ask how this affects the family
+Question: “How is this situation impacting your family?”
+
+4. Ask about loved one’s current living situation
+Question: “Where does ${lovedOneName} currently live? Can you give me the city, state, or zip code?”
+
+Once all values are collected, execute situationDiscovery(reasonForContact, lovedOneConcern, familyImpact, currentAddress)

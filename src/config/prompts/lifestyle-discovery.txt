@@ -1,0 +1,9 @@
+Lifestyle Discovery Flow
+
+1. Ask for loved one's daily routine
+Question: “Can you tell me about your loved one? What does a typical day look like for them?”
+
+2. Ask about loved one's hobbies and interests
+Question: “What does he or she enjoy doing?”
+
+Once both values are collected, execute lifestyleDiscovery(dailyRoutine, hobbies)
