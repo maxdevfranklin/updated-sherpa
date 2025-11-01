@@ -105,7 +105,36 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
       console.log("Simli Client initialized");
     }
   }, [simli_faceid]);
+  
+  const textToSpeech = useCallback(async (text: string): Promise<ArrayBuffer> => {
+    try {
+      console.log("Converting text to speech...");
+      const response = await fetch('https://api.openai.com/v1/audio/speech', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'tts-1',
+          voice: openai_voice,
+          input: text,
+          response_format: 'pcm',
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error(`TTS API error: ${response.statusText}`);
+      }
+
+      const audioBuffer = await response.arrayBuffer();
+      console.log("Text-to-speech conversion complete");
+      return audioBuffer;
+    } catch (error: any) {
+      console.error("Error in text-to-speech:", error);
+      throw error;
+    }
+  }, [openai_voice]);
   /**
    * Processes text response from Deepgram Agent and converts to speech via ElevenLabs
    */
@@ -118,43 +147,31 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
       const ttsStartTime = Date.now();
       
       // Get audio from ElevenLabs TTS
-      const audioBuffer = await speak(responseText);
+      const audioBuffer = await textToSpeech(responseText);
+      // Convert ArrayBuffer to Int16Array (assuming 24000 Hz PCM from OpenAI)
+      const audioData = new Int16Array(audioBuffer);
       
-      if (audioBuffer !== undefined) {
-        // ElevenLabs returns ulaw_8000 as Buffer, so we need to convert mulaw to PCM
-        const pcmData = convertMulawToPCM(audioBuffer);
-        
-        // Upsample from 8000 Hz to 16000 Hz for Simli
-        const upsampledAudio = upsampleAudio(pcmData, 8000, 16000);
-        
-        // Split audio into chunks and queue them
-        const chunkSize = 4800; // ~300ms chunks at 16000 Hz
-        for (let i = 0; i < upsampledAudio.length; i += chunkSize) {
-          const chunk = upsampledAudio.slice(i, i + chunkSize);
-          audioChunkQueueRef.current.push(chunk);
-        }
-        
-        // Start processing chunks
-        if (!isProcessingChunkRef.current) {
-          processNextAudioChunk();
-        }
-        
-        // Update timing metrics
-        const ttsTime = Date.now() - ttsStartTime;
-        setTimings(prev => ({
-          ...prev,
-          textToSpeech: ttsTime
-        }));
+      // Downsample from 24000 Hz to 16000 Hz for Simli
+      const downsampledAudio = downsampleAudio(audioData, 24000, 16000);
+      
+      // Split audio into chunks and queue them
+      const chunkSize = 4800; // ~300ms chunks at 16000 Hz
+      for (let i = 0; i < downsampledAudio.length; i += chunkSize) {
+        const chunk = downsampledAudio.slice(i, i + chunkSize);
+        audioChunkQueueRef.current.push(chunk);
+      }
+      
+      // Start processing chunks
+      if (!isProcessingChunkRef.current) {
+        processNextAudioChunk();
       }
       
       isSpeakingRef.current = false;
-      setProcessingStep("");
     } catch (error: any) {
-      console.error("Error processing agent text:", error);
+      console.error("Error processing backend response:", error);
       isSpeakingRef.current = false;
-      setProcessingStep("");
     }
-  }, []);
+  }, [textToSpeech]);
 
   /**
    * Initializes Deepgram Agent for full voice conversation

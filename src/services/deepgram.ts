@@ -55,7 +55,7 @@ export class DeepgramService {
 
   constructor(config: DeepgramConfig, callbacks: DeepgramServiceCallbacks) {
     this.config = {
-      model: 'nova-2',
+      model: 'nova-3',
       language: 'en-US',
       sampleRate: 16000,
       channels: 1,
