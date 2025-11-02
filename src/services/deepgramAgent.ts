@@ -1,6 +1,6 @@
 import { createClient } from '@deepgram/sdk';
 import { EventEmitter } from 'events';
-import { AGENT_CONFIG } from '../config/config';
+import { getAgentConfig, getAgentConfigCached } from '../config/config';
 import { logger } from '../../utils/logger';
 import { KnowledgeBaseService } from './KnowledgeBaseService';
 
@@ -179,8 +179,30 @@ export class DeepgramAgent extends EventEmitter {
       console.log('[DeepgramAgent] 📝 Custom welcome message:', this.agentConfig.welcomeMessage);
       console.log('[DeepgramAgent] 🎤 Custom voice:', this.agentConfig.agentVoice);
     } else {
-      config = AGENT_CONFIG;
-      console.log('[DeepgramAgent] 📋 Using static configuration');
+      // Try to get config from cache (server-side), otherwise fetch from API
+      if (typeof window === 'undefined') {
+        // Server-side: use cached config with prompts from .txt files
+        config = getAgentConfigCached();
+        console.log('[DeepgramAgent] 📋 Using static configuration (server-side)');
+      } else {
+        // Client-side: fetch config from API route which builds it server-side
+        console.log('[DeepgramAgent] 📋 Fetching config from API (client-side)...');
+        try {
+          const response = await fetch('/api/agent-config');
+          if (response.ok) {
+            config = await response.json();
+            console.log('[DeepgramAgent] ✅ Config fetched from API with prompts');
+          } else {
+            console.error('[DeepgramAgent] ❌ Failed to fetch config from API');
+            // Fallback to cached version (will have empty prompts)
+            config = getAgentConfigCached();
+          }
+        } catch (error) {
+          console.error('[DeepgramAgent] ❌ Error fetching config from API:', error);
+          // Fallback to cached version (will have empty prompts)
+          config = getAgentConfigCached();
+        }
+      }
     }
 
     console.log('[DeepgramAgent] 📋 Configuration to send:', JSON.stringify(config, null, 2));
@@ -203,7 +225,8 @@ export class DeepgramAgent extends EventEmitter {
    * Build Deepgram configuration from agent data
    */
   private async buildAgentConfig(agentData: any): Promise<any> {
-    const baseConfig = AGENT_CONFIG;
+    // Use cached version to ensure prompts are loaded correctly server-side
+    const baseConfig = getAgentConfigCached();
 
     // Log base configuration details
     console.log('[DeepgramAgent] 🏗️ Building agent configuration:');
