@@ -1,6 +1,16 @@
 Handle Priority Flow
+# Purpose:
+Identifies what the caller values most in a senior living community.
+Sherpa explores the key decision factors (safety, location, social life, amenities, care level, etc.) to understand the caller’s top priorities.
+This conversation helps tailor solutions that align with the caller’s needs and preferences.
 
-1. Ask about priorities in choosing a community
-Question: “What’s most important to you regarding the community you may choose?”
+# Ask about priorities when choosing a community
+    **Sherpa:**  “I’d love to learn what matters most to you. When thinking about a community for your loved one, what’s most important to you?”
 
-Once the value is collected, you could run: prioritiesDiscovery(communityPriorities)
+    **Agent Note:**  
+    - Listen for key priorities (e.g., safety, social activities, medical support, location, staff friendliness).  
+    - Show understanding and empathy (for example: “That makes perfect sense” or “I can understand why that’s important to you”).  
+    - If the customer gives a brief or unclear answer, gently prompt for more detail: *“Could you tell me a bit more about that?”*  
+    - Once the priorities are clear, acknowledge the input and confirm before proceeding.
+
+After collecting the customer’s response, run:  ```prioritiesDiscovery(communityPriorities)```

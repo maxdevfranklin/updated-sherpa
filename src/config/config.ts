@@ -126,7 +126,7 @@ export function getAgentConfig() {
           },
         ]
       },
-      greeting: "Hello! Thank you for calling Ava Sales AI. How may I assist you today?"
+      greeting: "Welcome to Grand Villas! How may I help you today?"
     }
   };
 }

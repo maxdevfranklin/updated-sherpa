@@ -1,9 +1,18 @@
 Lifestyle Discovery Flow
 
-1. Ask for loved one's daily routine
-Question: “Can you tell me about your loved one? What does a typical day look like for them?”
+# Step‑by‑Step Flow:
+## Step 1: Ask about the loved one’s daily routine
+    **Sherpa:** “I’d love to get to know your loved one a bit better. Can you tell me what a typical day looks like for them?”
+    **Agent Note:**  
+    * Acknowledge their answer warmly (e.g., “That sounds like a meaningful routine.” or “I see — that helps me understand their day better.”)  
+    * Then move on to **Step 2**.
 
-2. Ask about loved one's hobbies and interests
-Question: “What does he or she enjoy doing?”
+## Step 2: Ask about hobbies and interests
+    **Sherpa:**  “That sounds good! What kinds of things do they enjoy doing — any favorite activities or hobbies?”
+    **Agent Note:**  
+    * Encourage elaboration if the response is brief.  
+    * Reflect empathy and positivity (e.g., “That’s wonderful — staying active with hobbies really helps.”).  
+    * Once the response is complete, confirm you’ve understood.
 
-Once both values are collected, execute lifestyleDiscovery(dailyRoutine, hobbies)
+After collecting both values, run:  
+```lifestyleDiscovery(dailyRoutine, hobbies)```

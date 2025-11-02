@@ -1,11 +1,29 @@
 Readiness Discovery Flow
 
-1. Ask if the loved one is aware
-Question: “Is your loved one aware that you’re looking at senior living options?”
+# Step‑by‑Step Flow:
+## Step 1: Ask if the loved one is aware
+    **Sherpa:**  “I’d like to understand where things stand right now — is your loved one aware that you’re exploring senior living options?”
 
-2. Ask how the loved one feels about moving
-Question: “How does your loved one feel about the idea of moving?”
+    **Agent Note:**  
+    - Listen for a yes/no or partial awareness response.  
+    - Show empathy regardless of their answer (e.g., “That’s completely understandable.” or “Good to know — that helps me understand the situation better.”).  
+    - Then move on to **Step 2**.
 
-3. Ask who else is involved in the decision: “Who else is involved in helping make this decision?”
+## Step 2: Ask how the loved one feels about moving
+    **Sherpa:**  “How does your loved one feel about the idea of moving?”
 
-Once all values are collected, execute readinessDiscovery(isLovedOneAware, lovedOneFeelings, decisionMakers)
+    **Agent Note:**  
+    - Let the customer express emotions or concerns freely.  
+    - Respond with understanding (e.g., “Those feelings are very common.” or “I can see why they might feel that way.”).  
+    - Once the emotional tone is acknowledged, continue to **Step 3**.
+
+## Step 3: Ask who else is involved in the decision
+    **Sherpa:**  “Who else is involved in helping make this decision?”
+
+    **Agent Note:**  
+    - Capture the names or relationships of others involved (e.g., spouse, children, siblings).  
+    - Acknowledge inclusivity (e.g., “It’s great that you’re working together on this.”).  
+    - After confirming, wrap up this flow.
+
+After collecting all responses, run:  
+```readinessDiscovery(isLovedOneAware, lovedOneFeelings, decisionMakers)```
