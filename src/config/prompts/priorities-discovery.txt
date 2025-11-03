@@ -1,8 +1,4 @@
 Handle Priority Flow
-# Purpose:
-Identifies what the caller values most in a senior living community.
-Sherpa explores the key decision factors (safety, location, social life, amenities, care level, etc.) to understand the caller’s top priorities.
-This conversation helps tailor solutions that align with the caller’s needs and preferences.
 
 # Ask about priorities when choosing a community
     **Sherpa:**  “I’d love to learn what matters most to you. When thinking about a community for your loved one, what’s most important to you?”

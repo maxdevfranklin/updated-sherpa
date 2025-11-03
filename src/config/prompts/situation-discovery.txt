@@ -1,8 +1,4 @@
 Situation Discovery Flow
-# Purpose:
-Uncovers the background that led the user to seek out senior living options.
-Sherpa asks about the reason for contacting Grand Villa, the loved one’s main challenges, the family’s impact, and the current living situation.
-These questions reveal the emotional and situational context needed for meaningful recommendations.
 
 # Step‑by‑Step Flow:
 ## Step 1: Ask why they reached out

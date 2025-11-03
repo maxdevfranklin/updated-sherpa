@@ -9,7 +9,6 @@ Never move to next steps if you don't finish this
 This step assesses how prepared the family and loved one are for a potential move by exploring their awareness, feelings, and decision‑makers, ensuring the agent’s approach matches their emotional and practical readiness.
 
 ## **Step 2: Situation discovery**
-# Purpose:
 Uncovers the background that led the user to seek out senior living options. Sherpa asks about the reason for contacting Grand Villa, the loved one’s main challenges, the family’s impact, and the current living situation. These questions reveal the emotional and situational context needed for meaningful recommendations.
 
 ## **Step 3: Lifestyle discovery**
