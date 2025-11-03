@@ -1,4 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
+import axios from "axios";
 import { SimliClient } from "simli-client";
 import { DeepgramAgent } from '@/src/services/deepgramAgent';
 import { handleFunctionCallRequest } from '@/src/services/deepgramFunction';
@@ -9,17 +10,6 @@ import TimingMetrics from "./Components/TimingMetrics";
 import ControlPanel from "./Components/ControlPanel";
 interface SimliOpenAIProps {
   simli_faceid: string;
-  openai_voice:
-    | "alloy"
-    | "ash"
-    | "ballad"
-    | "coral"
-    | "echo"
-    | "sage"
-    | "shimmer"
-    | "verse";
-  openai_model: string;
-  initialPrompt: string;
   onStart: () => void;
   onClose: () => void;
   showDottedFace: boolean;
@@ -29,9 +19,6 @@ const simliClient = new SimliClient();
 
 const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
   simli_faceid,
-  openai_voice,
-  openai_model,
-  initialPrompt,
   onStart,
   onClose,
   showDottedFace,
@@ -47,7 +34,6 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
   const [timings, setTimings] = useState({
     speechToText: 0,
     backendResponse: 0,
-    textToSpeech: 0,
     total: 0
   });
   const [isProcessing, setIsProcessing] = useState(false);
@@ -59,7 +45,6 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
   const audioContextRef = useRef<AudioContext | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const processorRef = useRef<ScriptProcessorNode | null>(null);
-  const isFirstRun = useRef(true);
   
   // Deepgram Agent ref and session management
   const deepgramAgentRef = useRef<DeepgramAgent | null>(null);
@@ -106,35 +91,6 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
     }
   }, [simli_faceid]);
   
-  const textToSpeech = useCallback(async (text: string): Promise<ArrayBuffer> => {
-    try {
-      console.log("Converting text to speech...");
-      const response = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'tts-1',
-          voice: openai_voice,
-          input: text,
-          response_format: 'pcm',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`TTS API error: ${response.statusText}`);
-      }
-
-      const audioBuffer = await response.arrayBuffer();
-      console.log("Text-to-speech conversion complete");
-      return audioBuffer;
-    } catch (error: any) {
-      console.error("Error in text-to-speech:", error);
-      throw error;
-    }
-  }, [openai_voice]);
   /**
    * Processes text response from Deepgram Agent and converts to speech via ElevenLabs
    */
@@ -144,34 +100,44 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
       isSpeakingRef.current = true;
       
       setProcessingStep("Generating response voice...");
-      const ttsStartTime = Date.now();
-      
-      // Get audio from ElevenLabs TTS
-      const audioBuffer = await textToSpeech(responseText);
-      // Convert ArrayBuffer to Int16Array (assuming 24000 Hz PCM from OpenAI)
-      const audioData = new Int16Array(audioBuffer);
-      
-      // Downsample from 24000 Hz to 16000 Hz for Simli
-      const downsampledAudio = downsampleAudio(audioData, 24000, 16000);
-      
-      // Split audio into chunks and queue them
-      const chunkSize = 4800; // ~300ms chunks at 16000 Hz
-      for (let i = 0; i < downsampledAudio.length; i += chunkSize) {
-        const chunk = downsampledAudio.slice(i, i + chunkSize);
-        audioChunkQueueRef.current.push(chunk);
+      const elevenlabsResponse = await axios.post(
+        `https://api.elevenlabs.io/v1/text-to-speech/${process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID}?output_format=pcm_16000`,
+        {
+          text: responseText,
+          model_id: "eleven_turbo_v2_5",
+          voice_settings: {
+            stability: 1,
+            similarity_boost: 1,
+            style: 0,
+            use_speaker_boost: true,
+          },
+        },
+        {
+          headers: {
+            "xi-api-key": `${process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          responseType: "arraybuffer",
+        }
+      );
+
+      // Step 5: Convert audio to Uint8Array (Make sure its of type PCM16)
+      const pcm16Data = new Uint8Array(elevenlabsResponse.data);
+      console.log(pcm16Data);
+
+      // Step 6: Send audio data to WebRTC as 6000 byte chunks
+      const chunkSize = 6000;
+      for (let i = 0; i < pcm16Data.length; i += chunkSize) {
+        const chunk = pcm16Data.slice(i, i + chunkSize);
+        simliClient.sendAudioData(chunk);
       }
-      
-      // Start processing chunks
-      if (!isProcessingChunkRef.current) {
-        processNextAudioChunk();
-      }
-      
+
       isSpeakingRef.current = false;
     } catch (error: any) {
       console.error("Error processing backend response:", error);
       isSpeakingRef.current = false;
     }
-  }, [textToSpeech]);
+  }, []);
 
   /**
    * Initializes Deepgram Agent for full voice conversation
@@ -420,7 +386,8 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
       }
 
       // 2. Create ScriptProcessorNode for 512‑sample frames (~32 ms at 16 kHz)
-      const bufferSize = 512;
+      // Reduced buffer size for lower latency (~16ms instead of ~32ms)
+      const bufferSize = 256; // Smaller = faster processing but more CPU overhead
       processorRef.current = audioContextRef.current.createScriptProcessor(bufferSize, 1, 1);
 
       let chunkCount = 0;

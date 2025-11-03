@@ -33,7 +33,7 @@ export function getAgentConfig() {
     agent: {
       language: "en",
       listen: {
-        provider: { type: "deepgram", model: "nova-3" }
+        provider: { type: "deepgram", model: "nova-2" }
       },
       think: {
         provider: { type: "open_ai", model: "gpt-4.1", temperature: 0.7 },

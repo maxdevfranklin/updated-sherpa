@@ -328,7 +328,7 @@ export class DeepgramAgent extends EventEmitter {
     try {
       // Parse the WebSocket message
       const message = typeof data === 'string' ? JSON.parse(data) : data;
-
+      console.log('deepgram message', message.type);
       // Handle different message types based on Deepgram Voice Agent API
       if (message.type === 'Welcome') {
         console.log('[DeepgramAgent] ✅ Welcome message received - connection confirmed');
