@@ -28,13 +28,13 @@ Situation Discovery Flow
     - Show compassion (“That sounds like a lot to manage.” or “Families often feel this together.”).  
     - After they respond, smoothly move on to **Step 4**.
 
-## Step 4: Ask about the loved one’s current living situation
+## Step 4: Ask about the loved one's current living situation
     **Sherpa:**  
-    “Where does ${lovedOneName} currently live? Could you share the city, state, or zip code?”
+    "Where does ${lovedOneName} currently live? Does ${lovedOneName} live alone near you?"
 
     **Agent Note:**  
-    - Capture **currentAddress** precisely.  
-    - Clarify if only partial info is provided (“That’s okay — even a zip code helps me understand where you’re located.”).  
+    - Capture general location information (state or region) - no need for exact city or zip code.  
+    - Accept general answers like state name or region ("Florida", "California", "the Northeast", etc.).  
     - After confirmation, wrap up this section.
 
 After collecting all values, run:  

@@ -37,7 +37,7 @@ export function getAgentConfig() {
       },
       think: {
         provider: { type: "open_ai", model: "gpt-4.1", temperature: 0.7 },
-        prompt: loadDescription("prompts/main/main-prompt.txt"),
+        prompt: loadDescription("prompts/main/main-prompt.txt") + "\n\n" + loadDescription("prompts/grand-villa-info.txt"),
         functions: [
           {
             name: "trustBuilding",
@@ -45,12 +45,11 @@ export function getAgentConfig() {
             parameters: {
               type: "object",
               properties: {
-                firstName: { type: "string" },
-                lastName: { type: "string" },
+                name: { type: "string" },
                 locationInfo: { type: "string" },
                 lovedOneName: { type: "string" },
               },
-              required: ["firstName", "lastName", "locationInfo", "lovedOneName"]
+              required: ["name", "locationInfo", "lovedOneName"]
             }
           },
           {
@@ -126,7 +125,7 @@ export function getAgentConfig() {
           },
         ]
       },
-      greeting: "Welcome to Grand Villas! How may I help you today?"
+      greeting: "Welcome! Glad to see you at Grand Villas — looks like home and feels like family! I'm here to help you find the perfect senior living options today."
     }
   };
 }
@@ -172,3 +171,5 @@ export function getAgentConfigCached() {
 export const AGENT_CONFIG: ReturnType<typeof getAgentConfig> = typeof window === 'undefined' 
   ? (_agentConfigCache || getAgentConfig()) 
   : ({} as ReturnType<typeof getAgentConfig>); // Placeholder for client-side - should not be used
+
+  

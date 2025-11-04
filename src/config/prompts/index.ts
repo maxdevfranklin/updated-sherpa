@@ -57,6 +57,7 @@ if (isServerInit) {
       'schedule-visit': readPrompt('schedule-visit.txt'),
       'good-bye': readPrompt('good-bye.txt'),
       'needs-matching': readPrompt('needs-matching.txt'),
+      'grand-villa-info': readPrompt('grand-villa-info.txt'),
     };
     
     promptsLoaded = true;
@@ -125,6 +126,7 @@ function ensurePromptsLoaded(): void {
         'schedule-visit': readPrompt('schedule-visit.txt'),
         'good-bye': readPrompt('good-bye.txt'),
         'needs-matching': readPrompt('needs-matching.txt'),
+        'grand-villa-info': readPrompt('grand-villa-info.txt'),
       };
       const loadedCount = Object.keys(prompts).filter(k => prompts[k]).length;
       console.log(`[Prompts] ✅ Loaded ${loadedCount} prompts on-demand`);
@@ -157,6 +159,7 @@ export function getPrompt(key: string): string {
     'prompts/verify_identity.txt': 'priorities-discovery', // Maps to priorities-discovery.txt
     'prompts/priorities-discovery.txt': 'priorities-discovery',
     'prompts/schedule-visit.txt': 'schedule-visit',
+    'prompts/grand-villa-info.txt': 'grand-villa-info',
   };
 
   // Check if we have a direct mapping
