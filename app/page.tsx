@@ -75,10 +75,7 @@ const Demo: React.FC = () => {
           </div>
         ) : (
           <SimliOpenAI
-            openai_voice={avatar.openai_voice}
-            openai_model={avatar.openai_model}
             simli_faceid={avatar.simli_faceid}
-            initialPrompt={avatar.initialPrompt}
             onStart={onStart}
             onClose={onClose}
             showDottedFace={showDottedFace}

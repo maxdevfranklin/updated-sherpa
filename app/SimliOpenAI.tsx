@@ -34,6 +34,7 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
   const [timings, setTimings] = useState({
     speechToText: 0,
     backendResponse: 0,
+    textToSpeech: 0,
     total: 0
   });
   const [isProcessing, setIsProcessing] = useState(false);
