@@ -1,10 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
-import axios from "axios";
 import { SimliClient } from "simli-client";
 import { DeepgramAgent } from '@/src/services/deepgramAgent';
 import { handleFunctionCallRequest } from '@/src/services/deepgramFunction';
 import { VoiceSession, VoiceSessionManager } from '@/src/models/VoiceSession';
-import { speak } from '../src/services/elevenlabsFunction';
 import EnhancedVideoBox from "./Components/EnhancedVideoBox";
 import TimingMetrics from "./Components/TimingMetrics";
 import ControlPanel from "./Components/ControlPanel";
@@ -14,7 +12,6 @@ interface SimliOpenAIProps {
   onClose: () => void;
   showDottedFace: boolean;
 }
-
 const simliClient = new SimliClient();
 
 const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
@@ -101,30 +98,23 @@ const SimliOpenAI: React.FC<SimliOpenAIProps> = ({
       isSpeakingRef.current = true;
       
       setProcessingStep("Generating response voice...");
-      const elevenlabsResponse = await axios.post(
-        `https://api.elevenlabs.io/v1/text-to-speech/${process.env.NEXT_PUBLIC_ELEVENLABS_VOICE_ID}?output_format=pcm_16000`,
-        {
-          text: responseText,
-          model_id: "eleven_turbo_v2_5",
-          voice_settings: {
-            stability: 1,
-            similarity_boost: 1,
-            style: 0,
-            use_speaker_boost: true,
-          },
+      const fishTtsResponse = await fetch("/api/fish-tts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "xi-api-key": `${process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          responseType: "arraybuffer",
-        }
-      );
+        body: JSON.stringify({
+          text: responseText,
+        }),
+      });
+
+      if (!fishTtsResponse.ok) {
+        throw new Error("Fish Audio TTS request failed");
+      }
 
       // Step 5: Convert audio to Uint8Array (Make sure its of type PCM16)
-      const pcm16Data = new Uint8Array(elevenlabsResponse.data);
-      console.log(pcm16Data);
+      const pcmArrayBuffer = await fishTtsResponse.arrayBuffer();
+      const pcm16Data = new Uint8Array(pcmArrayBuffer);
 
       // Step 6: Send audio data to WebRTC as 6000 byte chunks
       const chunkSize = 6000;
